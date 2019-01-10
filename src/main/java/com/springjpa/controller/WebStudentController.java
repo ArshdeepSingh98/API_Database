@@ -47,32 +47,42 @@ public class WebStudentController {
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/students/{id}")
 	public void updateStudent(@RequestBody Student student,@PathVariable long id) {
-		updateToDatabase(student);
+//		updateToDatabase(student, id);
 		ss.updateStudent(student, id);
+		saveToDatabase();
 	}
 	
 	@RequestMapping(method=RequestMethod.DELETE, value="/students/{id}")
 	public void deleteStudent(@PathVariable long id) {
-		deleteFromDatabase(id);
+//		deleteFromDatabase(id);
 		ss.deleteStudent(id);
+		saveToDatabase();
 	}
 	
 	@RequestMapping("/save")
 	public String saveToDatabase() {
 		List<Student> students = getAllStudents();
+		sr.deleteAll();
 		for(Student sd : students) {
-			sr.save(sd);
+//			if(sr.existsById(sd.getId())) {
+				// pass
+//			}else {
+				sr.save(sd);	
+//			}
 		}
 		return "Done Saving";
 	}
 	
+	// not used
 	@RequestMapping("/update")
-	public String updateToDatabase(Student st) {
-		sr.delete(st);
-		sr.save(st);
+	public String updateToDatabase(Student newstd, long id) {
+		Student oldstd = getStudent(id);
+		sr.delete(oldstd);
+		sr.save(newstd);
 		return "Done Updating";
 	}
 	
+	// not used
 	@RequestMapping("/delete")
 	public String deleteFromDatabase(long id) {
 		Student st = getStudent(id);
