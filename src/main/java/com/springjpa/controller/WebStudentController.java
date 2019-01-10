@@ -47,12 +47,13 @@ public class WebStudentController {
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/students/{id}")
 	public void updateStudent(@RequestBody Student student,@PathVariable long id) {
+		updateToDatabase(student);
 		ss.updateStudent(student, id);
-		updateToDatabase(id);
 	}
 	
 	@RequestMapping(method=RequestMethod.DELETE, value="/students/{id}")
 	public void deleteStudent(@PathVariable long id) {
+		deleteFromDatabase(id);
 		ss.deleteStudent(id);
 	}
 	
@@ -66,12 +67,19 @@ public class WebStudentController {
 	}
 	
 	@RequestMapping("/update")
-	public String updateToDatabase(long id) {
-		Student st = getStudent(id);
+	public String updateToDatabase(Student st) {
 		sr.delete(st);
 		sr.save(st);
 		return "Done Updating";
 	}
+	
+	@RequestMapping("/delete")
+	public String deleteFromDatabase(long id) {
+		Student st = getStudent(id);
+		sr.delete(st);
+		return "Done Deleting";
+	}
+	
 	
 	@RequestMapping("/findall")
 	public String findallinDatabase() {
